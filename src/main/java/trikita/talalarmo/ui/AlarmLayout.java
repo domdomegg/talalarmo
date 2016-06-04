@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
@@ -16,7 +15,37 @@ import trikita.talalarmo.App;
 import trikita.talalarmo.MainActivity;
 import trikita.talalarmo.R;
 
-import static trikita.anvil.DSL.*;
+import static trikita.anvil.DSL.CENTER;
+import static trikita.anvil.DSL.CENTER_VERTICAL;
+import static trikita.anvil.DSL.FILL;
+import static trikita.anvil.DSL.LEFT;
+import static trikita.anvil.DSL.WRAP;
+import static trikita.anvil.DSL.allCaps;
+import static trikita.anvil.DSL.backgroundColor;
+import static trikita.anvil.DSL.dip;
+import static trikita.anvil.DSL.frameLayout;
+import static trikita.anvil.DSL.gravity;
+import static trikita.anvil.DSL.isPortrait;
+import static trikita.anvil.DSL.layoutGravity;
+import static trikita.anvil.DSL.linearLayout;
+import static trikita.anvil.DSL.margin;
+import static trikita.anvil.DSL.max;
+import static trikita.anvil.DSL.onClick;
+import static trikita.anvil.DSL.onSeekBarChange;
+import static trikita.anvil.DSL.orientation;
+import static trikita.anvil.DSL.padding;
+import static trikita.anvil.DSL.progress;
+import static trikita.anvil.DSL.size;
+import static trikita.anvil.DSL.text;
+import static trikita.anvil.DSL.textColor;
+import static trikita.anvil.DSL.textSize;
+import static trikita.anvil.DSL.textView;
+import static trikita.anvil.DSL.typeface;
+import static trikita.anvil.DSL.v;
+import static trikita.anvil.DSL.visibility;
+import static trikita.anvil.DSL.weight;
+import static trikita.anvil.DSL.x;
+import static trikita.anvil.DSL.y;
 
 public class AlarmLayout {
     public static void view() {
@@ -78,10 +107,10 @@ public class AlarmLayout {
             // On tablets leave some margin around the clock view to avoid gigantic circles
             if ((Anvil.currentView().getResources().getConfiguration().screenLayout &
                     Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE) {
-                 margin(dip(48));
+                margin(dip(48));
             } else {
-                 margin(dip(8));
-             }
+                margin(dip(8));
+            }
             int w = Anvil.currentView().getWidth();
             int h = Anvil.currentView().getHeight();
             if (h == 0 || w == 0) {
@@ -115,7 +144,8 @@ public class AlarmLayout {
                 v(ClockView.class, () -> {
                     size(FILL, FILL);
                     progress(App.getState().alarm().hours());
-                    max(12);
+                    // max(((App.getState().alarm().format()) ? 24 : 12));
+                    max(24);
                     onSeekBarChange((v, progress, fromUser) -> {
                         if (fromUser) {
                             App.dispatch(new Action<>(Actions.Alarm.SET_HOUR, progress));
@@ -127,7 +157,8 @@ public class AlarmLayout {
                     size(WRAP, WRAP);
                     int hours = App.getState().alarm().hours();
                     if (hours == 0) {
-                        text("12");
+                        // text(((App.getState().alarm().format()) ? "24" : "12"));
+                        text("24");
                     } else {
                         text(String.format("%02d", hours));
                     }
@@ -172,20 +203,27 @@ public class AlarmLayout {
                 });
             });
 
-            v(AmPmSwitch.class, () -> {
-                size(amPmWidth, (int) (amPmWidth/1.5f));
-                if (isPortrait()) {
-                    x(w / 2 - hourCircleSize * 0.21f - amPmWidth * 3 / 4);
-                    y(h / 2 + hourCircleSize * 0.05f - hourCircleSize / 2 - amPmWidth / 1.5f / 2);
-                } else {
-                    x(w / 2 - hourCircleSize * 0.25f + minuteCircleSize - amPmWidth / 2);
-                    y(h / 2 + hourCircleSize * 0.25f - amPmWidth / 1.5f / 2);
-                }
-                checked(App.getState().alarm().am());
-                onCheckedChange((CompoundButton buttonView, boolean isChecked) -> {
-                    App.dispatch(new Action<>(Actions.Alarm.SET_AM_PM, isChecked));
+            /*
+            if(App.getState().settings().format() == false) {
+                v(AmPmSwitch.class, () -> {
+                    size(amPmWidth, (int) (amPmWidth/1.5f));
+                    if (isPortrait()) {
+                        x(w / 2 - hourCircleSize * 0.21f - amPmWidth * 3 / 4);
+                        y(h / 2 + hourCircleSize * 0.05f - hourCircleSize / 2 - amPmWidth / 1.5f / 2);
+                    } else {
+                        x(w / 2 - hourCircleSize * 0.25f + minuteCircleSize - amPmWidth / 2);
+                        y(h / 2 + hourCircleSize * 0.25f - amPmWidth / 1.5f / 2);
+                    }
+                    checked(App.getState().alarm().am());
+                    onCheckedChange((CompoundButton buttonView, boolean isChecked) -> {
+                        App.dispatch(new Action<>(Actions.Alarm.SET_AM_PM, isChecked));
+                    });
                 });
-            });
+             else {
+             */
+            App.dispatch(new Action<>(Actions.Alarm.SET_AM_PM, true));
+            // }
+
         });
     }
 

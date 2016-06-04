@@ -17,6 +17,13 @@
 		android:title="@string/settings_snap_option"
 		android:defaultValue="true"
 		/>
+	<!--
+	<CheckBoxPreference
+		android:key="format_setting"
+		android:title="@string/settings_format_option"
+		android:defaultValue="false"
+		/>
+	-->
 	<CheckBoxPreference
 		android:key="ramping_setting"
 		android:title="@string/settings_volume_increase_option"
